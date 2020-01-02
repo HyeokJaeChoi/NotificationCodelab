@@ -78,7 +78,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendNotification() {
-        notifyManager.notify(NOTIFICATION_ID, buildNotificationBuilder().build())
+        val updateIntent = Intent(ACTION_UPDATE_NOTIFICATION)
+        val updatePendingIntent = PendingIntent.getBroadcast(
+            this,
+            NOTIFICATION_ID,
+            updateIntent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
+        val updateNotificationBuilder = buildNotificationBuilder().addAction(R.drawable.ic_update, "Update Notification", updatePendingIntent)
+
+        notifyManager.notify(NOTIFICATION_ID, updateNotificationBuilder.build())
         setNotificationButtonState(false, true, true)
     }
 
