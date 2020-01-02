@@ -23,11 +23,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        send_notification_btn.setOnClickListener { sendNotification() }
+        notify.setOnClickListener { sendNotification() }
         update.setOnClickListener { updateNotification() }
         cancel.setOnClickListener { cancelNotification() }
 
         createNotificationChannel()
+        setNotificationButtonState(true, false, false)
     }
 
     private fun createNotificationChannel() {
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendNotification() {
         notifyManager.notify(NOTIFICATION_ID, buildNotificationBuilder().build())
+        setNotificationButtonState(false, true, true)
     }
 
     private fun updateNotification() {
@@ -77,9 +79,18 @@ class MainActivity : AppCompatActivity() {
             .setBigContentTitle("Notification Updated!"))
 
         notifyManager.notify(NOTIFICATION_ID, updatedNotificationBuilder.build())
+
+        setNotificationButtonState(false, false, true)
     }
 
     private fun cancelNotification() {
         notifyManager.cancel(NOTIFICATION_ID)
+        setNotificationButtonState(true, false, false)
+    }
+
+    private fun setNotificationButtonState(isNotifyEnabled: Boolean, isUpdateEnabled: Boolean, isCancelEnabled: Boolean) {
+        notify.isEnabled = isNotifyEnabled
+        update.isEnabled = isUpdateEnabled
+        cancel.isEnabled = isCancelEnabled
     }
 }
