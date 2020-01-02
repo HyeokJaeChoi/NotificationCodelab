@@ -3,8 +3,10 @@ package com.hyeok.notificationcodelab
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
@@ -18,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     private val PRIMARY_CHANNEL_ID = "primary_notification_channel"
     private val NOTIFICATION_ID = 0
     private val notifyManager by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
+    private val ACTION_UPDATE_NOTIFICATION = "com.example.android.notifyme.ACTION_UPDATE_NOTIFICATION"
+    private val notificationReceiver by lazy { NotificationReceiver() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +33,13 @@ class MainActivity : AppCompatActivity() {
 
         createNotificationChannel()
         setNotificationButtonState(true, false, false)
+
+        registerReceiver(notificationReceiver, IntentFilter(ACTION_UPDATE_NOTIFICATION))
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(notificationReceiver)
+        super.onDestroy()
     }
 
     private fun createNotificationChannel() {
@@ -92,5 +103,11 @@ class MainActivity : AppCompatActivity() {
         notify.isEnabled = isNotifyEnabled
         update.isEnabled = isUpdateEnabled
         cancel.isEnabled = isCancelEnabled
+    }
+
+    inner class NotificationReceiver: BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            updateNotification()
+        }
     }
 }
