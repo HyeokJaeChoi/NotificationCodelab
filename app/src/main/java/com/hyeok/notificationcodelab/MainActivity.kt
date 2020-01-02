@@ -7,10 +7,12 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.app.NotificationCompat
 
 class MainActivity : AppCompatActivity() {
 
     private val PRIMARY_CHANNEL_ID = "primary_notification_channel"
+    private val NOTIFICATION_ID = 0
     private val notifyManager by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,5 +37,12 @@ class MainActivity : AppCompatActivity() {
 
             notifyManager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    private fun buildNotificationBuilder(): NotificationCompat.Builder {
+        return NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID)
+            .setContentTitle("You've been notified!")
+            .setContentText("This is your notification text.")
+            .setSmallIcon(R.drawable.ic_android)
     }
 }
