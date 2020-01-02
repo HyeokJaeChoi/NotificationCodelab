@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -69,7 +70,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateNotification() {
+        val androidImage = BitmapFactory.decodeResource(resources, R.drawable.mascot_1)
 
+        val updatedNotificationBuilder = buildNotificationBuilder().setStyle(NotificationCompat.BigPictureStyle()
+            .bigPicture(androidImage)
+            .setBigContentTitle("Notification Updated!"))
+
+        notifyManager.notify(NOTIFICATION_ID, updatedNotificationBuilder.build())
     }
 
     private fun cancelNotification() {
