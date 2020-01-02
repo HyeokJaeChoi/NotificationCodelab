@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         send_notification_btn.setOnClickListener { sendNotification() }
+        update.setOnClickListener { updateNotification() }
+        cancel.setOnClickListener { cancelNotification() }
 
         createNotificationChannel()
     }
@@ -64,5 +66,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendNotification() {
         notifyManager.notify(NOTIFICATION_ID, buildNotificationBuilder().build())
+    }
+
+    private fun updateNotification() {
+
+    }
+
+    private fun cancelNotification() {
+        notifyManager.cancel(NOTIFICATION_ID)
     }
 }
