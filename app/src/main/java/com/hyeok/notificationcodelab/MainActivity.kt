@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private val notifyManager by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     private val ACTION_UPDATE_NOTIFICATION = "com.example.android.notifyme.ACTION_UPDATE_NOTIFICATION"
     private val notificationReceiver by lazy { NotificationReceiver() }
+    private val ACTION_DELETE_NOTIFICATION = "com.example.android.notifyme.ACTION_DELETE_NOTIFICATION"
+    private val deleteNotificationReceiver by lazy { DeleteNotificationReceiver() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +37,12 @@ class MainActivity : AppCompatActivity() {
         setNotificationButtonState(true, false, false)
 
         registerReceiver(notificationReceiver, IntentFilter(ACTION_UPDATE_NOTIFICATION))
+        registerReceiver(deleteNotificationReceiver, IntentFilter(ACTION_DELETE_NOTIFICATION))
     }
 
     override fun onDestroy() {
         unregisterReceiver(notificationReceiver)
+        unregisterReceiver(deleteNotificationReceiver)
         super.onDestroy()
     }
 
@@ -66,11 +70,19 @@ class MainActivity : AppCompatActivity() {
             NOTIFICATION_ID,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
+        val deleteNotificationIntent = Intent(ACTION_DELETE_NOTIFICATION)
+        val deleteNotificationPendingIntent = PendingIntent.getBroadcast(
+            this,
+            NOTIFICATION_ID,
+            deleteNotificationIntent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
 
         return NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID)
             .setContentTitle("You've been notified!")
             .setContentText("This is your notification text.")
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(deleteNotificationPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setAutoCancel(true)
@@ -117,6 +129,12 @@ class MainActivity : AppCompatActivity() {
     inner class NotificationReceiver: BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             updateNotification()
+        }
+    }
+
+    inner class DeleteNotificationReceiver: BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            setNotificationButtonState(true, false, false)
         }
     }
 }
